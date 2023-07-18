@@ -11,6 +11,10 @@
         <servlet-name>PaymentConfirm</servlet-name>
         <servlet-class>control.PaymentConfirm</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>CompletePay</servlet-name>
+        <servlet-class>control.CompletePay</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>PaymentControl</servlet-name>
         <url-pattern>/PaymentControl</url-pattern>
@@ -18,6 +22,10 @@
     <servlet-mapping>
         <servlet-name>PaymentConfirm</servlet-name>
         <url-pattern>/PaymentConfirm</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CompletePay</servlet-name>
+        <url-pattern>/CompletePay</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

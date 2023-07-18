@@ -96,7 +96,7 @@ public class PaymentControl extends HttpServlet {
             Payment payment = new Payment();
             payment.setIntent("sale");
 
-            Payer payer = getPayerInformation(profile);
+            Payer payer = getPayerInformation(a);
             payment.setPayer(payer);
 
             RedirectUrls redirectUrls = getRedirectURLs();
@@ -124,25 +124,25 @@ public class PaymentControl extends HttpServlet {
 
         for (OrderDetail orderDetail : orderDetails) {
             if (orderDetail.getItemType().equals("photo_schedule")) {
-                PhotoSchedule schedule = scheduleDAO.getPhotoScheduleById(orderDetail.getItemId());
-                PhotographyStudio studio = studioDAO.getStudioById(schedule.getStudioId());
-                Location location = locationDAO.getLocationById(schedule.getLocationId());
-                transaction.setAmount(amount);
-                transaction.setDescription(location.getName() + studio.getName());
-                Item item1 = new Item();
-                item1.setCurrency("USD");
-                item1.setName(location.getName());
-                item1.setPrice(location.getPrice() + "");
-                item1.setSku(orderDetail.getOrderId() + "");
-                item1.setQuantity("1");
-                Item item2 = new Item();
-                item2.setCurrency("USD");
-                item2.setName(studio.getName());
-                item2.setPrice(studio.getPrice() + "");
-                item2.setSku(orderDetail.getOrderId() + "");
-                item2.setQuantity("1");
-                items.add(item1);
-                items.add(item2);
+//                PhotoSchedule schedule = scheduleDAO.getPhotoScheduleById(orderDetail.getItemId());
+//                PhotographyStudio studio = studioDAO.getStudioById(schedule.getStudioId());
+//                Location location = locationDAO.getLocationById(schedule.getLocationId());
+//                transaction.setAmount(amount);
+//                transaction.setDescription(location.getName() + studio.getName());
+//                Item item1 = new Item();
+//                item1.setCurrency("USD");
+//                item1.setName(location.getName());
+//                item1.setPrice(location.getPrice() + "");
+//                item1.setSku(orderDetail.getOrderId() + "");
+//                item1.setQuantity("1");
+//                Item item2 = new Item();
+//                item2.setCurrency("USD");
+//                item2.setName(studio.getName());
+//                item2.setPrice(studio.getPrice() + "");
+//                item2.setSku(orderDetail.getOrderId() + "");
+//                item2.setQuantity("1");
+//                items.add(item1);
+//                items.add(item2);
             } else {
 
                 transaction.setAmount(amount);
