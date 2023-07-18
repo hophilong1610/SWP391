@@ -109,6 +109,25 @@ public class DAO implements DBContext {
         return list;
     }
     
+    public List<Integer> getProductByProductCartId(String cid) {
+        List<Integer> list = new ArrayList<>();
+        String query = "select pid from productCart\n"
+                + "where cartid = ?";
+        try (Connection con=getConnect()) {
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setString(1, cid);
+            ResultSet rs=ps.executeQuery();
+            while (rs.next()) {
+               int pid = rs.getInt("pid");
+               
+               list.add(pid);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+    
     public List<Purchase> getPurchaseByID(int id) {
         List<Purchase> list = new ArrayList<>();
         String query = "select * from Purchase\n"
@@ -129,6 +148,26 @@ public class DAO implements DBContext {
             Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return list;
+    }
+    
+    public Purchase getPurchaseLastestByID(int id) {
+       Purchase p = null;
+        String query = "SELECT TOP 1 * FROM Purchase ORDER BY oid DESC";
+        try (Connection con=getConnect()) {
+            PreparedStatement ps = con.prepareStatement(query);
+            ResultSet rs=ps.executeQuery();
+            if (rs.next()) {
+                p = new Purchase(rs.getInt(1),
+                        rs.getInt(2),
+                        rs.getDouble(3),
+                        rs.getInt(4),
+                        rs.getString(5),
+                        rs.getString(6));
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return p;
     }
     
     public List<Purchase> getAllPurchase() {
@@ -633,6 +672,17 @@ public class DAO implements DBContext {
     
     public void editStatusReady(String id) {
         String query = "update Purchase set [Status] = 2  where [oid] = ?";
+       try (Connection con=getConnect()) {
+            PreparedStatement ps = con.prepareStatement(query);
+            ps.setString(1, id);
+            ps.executeUpdate();
+        } catch (Exception ex) {
+            Logger.getLogger(DAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void editStatusComplete(String id) {
+        String query = "update Purchase set [Status] = 3  where [oid] = ?";
        try (Connection con=getConnect()) {
             PreparedStatement ps = con.prepareStatement(query);
             ps.setString(1, id);

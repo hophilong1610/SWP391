@@ -16,6 +16,7 @@ import com.paypal.api.payments.RedirectUrls;
 import com.paypal.api.payments.Transaction;
 import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
+import dao.DAO;
 import entity.Account;
 import entity.Product;
 import entity.productCart;
@@ -32,8 +33,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.naming.NamingException;
-import sun.java2d.cmm.Profile;
+
 import util.Constant;
 
 public class PaymentControl extends HttpServlet {
@@ -84,12 +84,13 @@ public class PaymentControl extends HttpServlet {
 //        String phone = request.getParameter("number");
             String productCardId = req.getParameter("productCardId");
             String totalAmount = req.getParameter("totalPrice");
+            DAO dao = new DAO();
             List<Product> product = new ArrayList<>();
             List<productCart> p = new ArrayList<>();
 
-            List<OrderDetail> listOrder = orderDetailDAO.getOrderDetailByOrderId(Integer.parseInt(orderId));
+            List<productCart> listOrder = dao.geProductCartByID(Integer.parseInt(productCardId));
 
-            Transaction listTransaction = getTransactionInformation(listOrder);
+            Transaction listTransaction = getTransactionInformation(listOrder, totalAmount);
 
             APIContext apiContext = new APIContext(Constant.CLIENT_ID, Constant.CLIENT_SECRET, Constant.CLIENT_MODE);
 
@@ -112,49 +113,30 @@ public class PaymentControl extends HttpServlet {
         }
     }
 
-    private Transaction getTransactionInformation(List<OrderDetail> orderDetails) {
-//        LocationDAO locationDAO = new LocationDAO();
-//        DressPhotoComboDAO comboDAO = new DressPhotoComboDAO();
-//        PhotographyStudiosDAO studioDAO = new PhotographyStudiosDAO();
-//        PhotoScheduleDAO scheduleDAO = new PhotoScheduleDAO();
+    private Transaction getTransactionInformation(List<productCart> productList, String bill) {
         List<Item> items = new ArrayList<>();
         ItemList itemList = new ItemList();
         Transaction transaction = new Transaction();
+        DAO dao = new DAO();
         Amount amount = new Amount();
 
-        for (OrderDetail orderDetail : orderDetails) {
-            if (orderDetail.getItemType().equals("photo_schedule")) {
-//                PhotoSchedule schedule = scheduleDAO.getPhotoScheduleById(orderDetail.getItemId());
-//                PhotographyStudio studio = studioDAO.getStudioById(schedule.getStudioId());
-//                Location location = locationDAO.getLocationById(schedule.getLocationId());
-//                transaction.setAmount(amount);
-//                transaction.setDescription(location.getName() + studio.getName());
-//                Item item1 = new Item();
-//                item1.setCurrency("USD");
-//                item1.setName(location.getName());
-//                item1.setPrice(location.getPrice() + "");
-//                item1.setSku(orderDetail.getOrderId() + "");
-//                item1.setQuantity("1");
-//                Item item2 = new Item();
-//                item2.setCurrency("USD");
-//                item2.setName(studio.getName());
-//                item2.setPrice(studio.getPrice() + "");
-//                item2.setSku(orderDetail.getOrderId() + "");
-//                item2.setQuantity("1");
-//                items.add(item1);
-//                items.add(item2);
-            } else {
+        // Calculate the total amount from the items
+//        double totalAmount = Double.parseDouble(bill);
 
-                transaction.setAmount(amount);
-                transaction.setDescription(orderDetail.getName());
+        for (productCart cart : productList) {
+            List<Integer> pros = dao.getProductByProductCartId(cart.getCartid() + "");
 
+            for (Integer i : pros) {
+                
+                Product pro = dao.getProductByID(i + "");
+                
                 Item item = new Item();
                 item.setCurrency("USD");
-                item.setName(orderDetail.getName());
-                item.setPrice(orderDetail.getPrice() + "");
-                item.setSku(orderDetail.getOrderId() + "");
+                item.setName(pro.getName());
+                item.setSku(cart.getCartid() + "");
+                item.setPrice(pro.getPrice() + "");
                 item.setQuantity("1");
-
+               
                 items.add(item);
             }
         }
@@ -162,26 +144,21 @@ public class PaymentControl extends HttpServlet {
         itemList.setItems(items);
         transaction.setItemList(itemList);
 
-// Calculate the total amount from the items
-        double totalAmount = items.stream()
-                .mapToDouble(item -> Double.parseDouble(item.getPrice()))
-                .sum();
         amount.setCurrency("USD");
-        amount.setTotal(String.valueOf(totalAmount));
-
+        amount.setTotal(bill);
         transaction.setAmount(amount);
+
+        transaction.setDescription("Payment"); // Set an appropriate description here
 
         return transaction;
     }
 
-    private Payer getPayerInformation(Profile p) {
+    private Payer getPayerInformation(Account a) {
         Payer payer = new Payer();
         payer.setPaymentMethod("paypal");
 
         PayerInfo payerInfo = new PayerInfo();
-//        payerInfo.setFirstName(p.getFirstName())
-//                .setLastName(p.getLastName())
-//                .setEmail(p.getEmail());
+        payerInfo.setFirstName(a.getName());
 
         payer.setPayerInfo(payerInfo);
 
@@ -190,8 +167,8 @@ public class PaymentControl extends HttpServlet {
 
     private RedirectUrls getRedirectURLs() {
         RedirectUrls redirectUrls = new RedirectUrls();
-        redirectUrls.setCancelUrl("http://localhost:8080/wedding_photography/cancel.html");
-        redirectUrls.setReturnUrl("http://localhost:8080/wedding_photography/paymentConfirm");
+        redirectUrls.setCancelUrl("http://localhost:8080/fastfood123/cancel.html");
+        redirectUrls.setReturnUrl("http://localhost:8080/fastfood123/paymentConfirm");
 
         return redirectUrls;
     }

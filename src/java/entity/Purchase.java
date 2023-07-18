@@ -13,6 +13,12 @@ public class Purchase {
     double bill;
     String address, phone;
 
+    public Purchase() {
+    }
+    
+    
+    
+
     public Purchase(int id, int cartid, double bill, int status, String address, String phone) {
         this.id = id;
         this.cartid = cartid;

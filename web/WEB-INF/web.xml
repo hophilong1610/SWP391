@@ -21,7 +21,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>PaymentConfirm</servlet-name>
-        <url-pattern>/PaymentConfirm</url-pattern>
+        <url-pattern>/paymentConfirm</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>CompletePay</servlet-name>

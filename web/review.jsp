@@ -22,11 +22,16 @@
     <body>
         <h1>Transaction Details</h1>
         <form action="CompletePay" method="POST">
+            
             <input type="hidden" name="amount" value="${requestScope.transaction.amount.total}"/>
             <input type="hidden" name="sku" value="${requestScope.transaction.itemList.items.get(0).sku}"/>
 
             <p><strong>Description:</strong> ${requestScope.transaction.description}</p>
             <p><strong>Amount:</strong> ${requestScope.transaction.amount.total} ${requestScope.transaction.amount.currency}</p>
+            <label>Phone</label>
+            <input type="text" name="phone" required=""/>
+            <label>Address</label>
+            <input type="text" name="address" required=""/>
 
             <h3>Items:</h3>
             <table>

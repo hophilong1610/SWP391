@@ -5,6 +5,8 @@
  */
 package control;
 
+import dao.DAO;
+import entity.Purchase;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -31,19 +33,30 @@ public class CompletePay extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String orderId = request.getParameter("sku");
-        String amount = request.getParameter("amount");
-        OrderDAO orderDAO = new OrderDAO();
+        String productCartId = request.getParameter("sku");
+        String bill = request.getParameter("amount");
+        String address = request.getParameter("address");
+        String phone = request.getParameter("phone");
+        DAO dao = new DAO();
         String url = "error.jsp";
         HttpSession session = request.getSession();
         
         try {
-            boolean result = orderDAO.confirmOrderById(Integer.parseInt(orderId), "pending", Double.parseDouble(amount));
-            if(result){
-                url = "DispatcherServlet?btAction=Home";
-                session.setAttribute("LIST_CARR_ITEM", null);
-                session.setAttribute("CART_ITEM", null);
-            }
+//            boolean result = orderDAO.confirmOrderById(Integer.parseInt(orderId), "pending", Double.parseDouble(amount));
+//            if(result){
+//                url = "DispatcherServlet?btAction=Home";
+//                session.setAttribute("LIST_CARR_ITEM", null);
+//                session.setAttribute("CART_ITEM", null);
+//            }
+            dao.insertOrder(Integer.parseInt(productCartId), address, phone, Double.parseDouble(bill));
+            
+            // get lastest oid;
+            Purchase p = dao.getPurchaseLastestByID(Integer.parseInt(productCartId));
+            // set status 
+            
+            dao.editStatusComplete(p.getId() + "");
+            
+            url="Home.jsp";
         } catch (Exception e) {
             e.printStackTrace();
         }finally{
