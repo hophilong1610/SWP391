@@ -13,6 +13,7 @@
 
     <body>
         <jsp:include page="Menu.jsp"></jsp:include>
+        <c:set var="cardId" value="0"/>
             <div class="shopping-cart">
                 <div class="px-4 px-lg-0">
 
@@ -44,6 +45,7 @@
                                             </thead>
                                             <tbody>
                                             <c:forEach items="${p}" var="o">
+                                                <c:set var="cardId" value="${o.cartid}" />
                                                 <c:if test="${o.status == 0}">
                                                     <tr>
                                                         <c:forEach items="${product}" var="p">
@@ -110,6 +112,7 @@
                         
                                        
                                     <a href="Buy.jsp" class="btn btn-dark rounded-pill py-2 btn-block">Buy</a>
+                                    <a href="PaymentControl?productCardId=${cardId}&totalPrice=${bill}" class="btn btn-dark rounded-pill py-2 btn-block">Payment Online</a>                                 
                                     <a href="home" class="btn btn-dark rounded-pill py-2 btn-block" style = "background-color: white; color: black">Back to Home</a>   
                                 </div>
                             </div>
