@@ -13,6 +13,8 @@
 
     <body>
         <jsp:include page="Menu.jsp"></jsp:include>
+        <c:set var="productCard" value="${requestScope.p}"/>
+        <c:set var="totalCard" value="${requestScope.bill}"/>
             <div class="shopping-cart">
                 <div class="px-4 px-lg-0">
 
@@ -110,6 +112,7 @@
                         
                                        
                                     <a href="Buy.jsp" class="btn btn-dark rounded-pill py-2 btn-block">Buy</a>
+                                    <a href="PaymentControl?productCardId=${productCard.cartid}&totalPrice=${totalCard}" class="btn btn-dark rounded-pill py-2 btn-block">Payment Online</a>                                 
                                     <a href="home" class="btn btn-dark rounded-pill py-2 btn-block" style = "background-color: white; color: black">Back to Home</a>   
                                 </div>
                             </div>
